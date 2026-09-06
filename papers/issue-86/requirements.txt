@@ -1,0 +1,4 @@
+# Issue #86 reproduction environment (python 3.10+ recommended)
+torch==2.9.1
+numpy
+matplotlib
