@@ -1,9 +1,9 @@
 # Loss Spikes in Toy Networks: A Controlled Adjudication of Competing Instability Mechanisms
 
 **Author**: how2how2how2-arch — issue #86 (registered 2026-09-06).
-**Status**: submission v1.0 (2026-09-06).
+**Status**: revision v1.1 (2026-09-07) — responding to editorial triage (figures embedded; claims calibrated for environment sensitivity; two-tier environment-tolerant validation).
 **Reproduction**: `bash reproduce.sh` — one command regenerates all data (~13 min CPU)
-and validates 30/30 checks (see README.md). Figures committed in `figures/`
+and validates 24/24 two-tier checks (see README.md; exact spike counts are environment-chaotic and are asserted only within bands — §5). Figures committed in `figures/` and embedded below at their citation points:
 (fig1_phase_map.png, fig2_freeze_arms.png, fig3_excursion_trace.png); regenerate with
 `/usr/bin/python3 make_figures.py` (matplotlib).
 Contribution-level declaration: **theory+empirics** (controlled causal freeze-arm manipulations on a fully observable toy benchmark, multi-seed statistics, exact ground truth, concurrent measurement of every competing mechanism's named trigger).
@@ -55,7 +55,11 @@ Our core finding, stated for the toy regime: **spikes require both a sharp regim
 
 ### 4.1 Phase map: spikes require high learning rate AND high weight decay
 
-Table 1 and Figure 1 show the mean spike count per (η, wd) cell over 3 seeds (20k steps). wd=0 never spikes at any learning rate; low η never spikes even at wd=0.1; spike rate is monotone in both. The spike region occupies the high-η × high-wd corner.
+Table 1 and Figure 1 show the mean spike count per (η, wd) cell over 3 seeds (20k steps). wd=0 never spikes at any learning rate; low η never spikes even at wd=0.1; spike rate is monotone in both. The spike region occupies the high-η × high-wd corner (Figure 1).
+
+![Figure 1: phase-map heatmap of mean loss-spike events per (η, wd) cell over 3 seeds (20k steps).](figures/fig1_phase_map.png)
+
+*Figure 1: phase-map heatmap — mean spike count per (η, wd) cell (Table 1), 3 seeds/cell. wd=0 and low-η columns are clean; the spike region occupies the high-η × high-wd corner (money cell η=0.2, wd=0.1 outlined).*
 
 | η \ wd | 0 | 3e-3 | 1e-2 | 3e-2 | 1e-1 |
 |---|---|---|---|---|---|
@@ -76,11 +80,23 @@ Across the 33 runs that ever crossed λmax = 2/η, only 18 spiked: accord 54.5% 
 
 ### 4.4 Causal freeze decomposition (Figures 2–3)
 
-On the money cell (η=0.2 wd=0.1, branch step 300 pre-spike, 2 seeds): control spikes resume (2/2, 9–18 events); **freeze-hidden (fc1+fc2) → 0 spikes in both seeds** (0/2, CI[0,66]); freeze-readout (fc3) → spikes persist (2/2, 6–9 events). Test accuracy stays ≥0.91 in all arms. The hidden projection weights' *adaptation* — not their norm level, not the readout, not the λmax level — is the load-bearing condition for the instability. The per-step trace realization (Figure 3, seed 0, 1500 steps) shows the same decomposition at fine resolution: control spikes four times post-branch ([340–360], [480–500], [620–660], [1400–1420]) while freeze=hid — bit-identical to the branch at step 300 — never spikes.
+On the money cell (η=0.2 wd=0.1, branch step 300 pre-spike, 2 seeds): control spikes resume (2/2, 9–18 events); **freeze-hidden (fc1+fc2) → 0 spikes in both seeds** (0/2, CI[0,66]); freeze-readout (fc3) → spikes persist (2/2, 6–9 events). Test accuracy stays ≥0.91 in all arms. The hidden projection weights' *adaptation* — not their norm level, not the readout, not the λmax level — is the load-bearing condition for the instability.
+
+![Figure 2: freeze-arm outcomes on the money cell (η=0.2, wd=0.1), r2.](figures/fig2_freeze_arms.png)
+
+*Figure 2: causal freeze arms (r2, branch at step 300, 2 seeds/arm): fraction of seeds spiking post-branch — control 2/2, freeze=hid (fc1+fc2 frozen) 0/2, freeze=readout (fc3 frozen) 2/2 — with per-seed post-branch full-Hessian λmax means overlaid (r3): freeze=hid s1 25.2 > 2/η = 10 while clean. The freeze=hid arms keep above-threshold sharpness yet do not spike; the readout is not the load-bearing group.*
+
+The per-step trace realization (Figure 3, seed 0, 1500 steps) shows the same decomposition at fine resolution: control spikes four times post-branch ([340–360], [480–500], [620–660], [1400–1420]) while freeze=hid — bit-identical to the branch at step 300 — never spikes.
+
+![Figure 3: loss and sharpness traces, money cell seed 0.](figures/fig3_excursion_trace.png)
+
+*Figure 3: per-step traces (loss sampled every 20 steps, top; full-Hessian λmax every 20 steps, bottom) on the money cell (seed 0, 1500 steps). Control (red) spikes at [340–360], [480–500], [620–660], [1400–1420] with λmax excursions to 84.7 at spike onset (step 620); freeze=hid (green, branched bit-identically at step 300) stays flat — post-branch λmax mean 13.3 > 2/η = 10, max 22.5 — with zero spikes.*
 
 ### 4.5 Refuting the effective-sharpness explanation
 
-Could freeze-hidden be stable merely because the frozen directions hosted the sharp modes, lowering the *trainable-subspace* sharpness below 2/η? No: restricted (trainable-subspace) λmax equals full-Hessian λmax in every arm (e.g. freeze=hid s1: full 25.2 vs trainable 25.3, both > 2/η=10), and freeze=hid s1 sustains λmax excursions to 66 (6.6× threshold) with **zero spikes** (Figure 2 overlay; Figure 3 trace). The instability is dynamical: it requires the hidden projections to co-adapt inside a sharp regime. Removing the adaptation removes the spike even when the sharpness remains.
+Could freeze-hidden be stable merely because the frozen directions hosted the sharp modes, lowering the *trainable-subspace* sharpness below 2/η? No: restricted (trainable-subspace) λmax equals full-Hessian λmax in every arm (e.g. freeze=hid s1: full 25.2 vs trainable 25.3, both > 2/η=10), and freeze=hid s1 sustains λmax excursions to 66 (6.6× threshold) with **zero spikes** in the committed runs (Figure 2 overlay; Figure 3 trace). The instability is dynamical: it requires the hidden projections to co-adapt inside a sharp regime. Removing the adaptation removes the spike even when the sharpness remains.
+
+**Robustness of the freeze decomposition.** The causal claim rests on the round-2 freeze arms (r2: branch at step 300, 6,000 steps, single full-λmax measurement → bit-identical pre-branch states): freeze=hid 0/2 vs control 2/2 vs freeze=readout 2/2 reproduced unchanged in an independent environment (fresh clone, torch 2.9.1 CPU, Python 3.12; editor triage run, 2026-09-07). The round-3 restricted-λmax runs corroborate the effective-sharpness refutation directionally in both environments (trainable-subspace λmax within ~2 of full-λmax; freeze=hid spikes ≤ control spikes per seed), but their exact magnitudes are single-environment estimates: the freeze=hid s1 post-branch λmax mean is 25.2 in the committed runs and 13.9 in the second environment, and the committed 0-spike outcome for that r3 seed was 1 spike in the second environment at step [260, 280] — *pre-branch* (branch at 300), i.e. a pre-freeze trajectory divergence, not a post-freeze counterexample. Exact 20k-step spike counts are chaotic under cross-machine floating-point perturbations (see §5); the r2 freeze-arm outcomes and the qualitative structure are not.
 
 ### 4.6 Precision is not the driver (NFI refuted)
 
@@ -88,7 +104,7 @@ fp64 training on the spiking cell spikes as much as fp32 (2/2 cells; fp32 contro
 
 ### 4.7 Boundary cells are rare-event regions
 
-At the edge of the spike region (η=0.05 wd=0.03; η=0.1 wd=0.01), 6-seed runs give 1/6 and 1/6 spike rates (Wilson CI[3.0,56.4] each) — seed-rare events rather than deterministic transitions, consistent with a stochastic (dynamical) trigger.
+At the edge of the spike region (η=0.05 wd=0.03; η=0.1 wd=0.01), 6-seed runs give 1/6 and 1/6 spike rates in the committed reference data (Wilson CI[3.0,56.4] each). These cells are seed- **and environment**-rare events rather than deterministic transitions: an independent second-environment reproduction gave 1/6 and 0/6 for the two cells (0/6 → Wilson CI[0.0,39.0]). The boundary is stochastic — consistent with a dynamical trigger — but the exact rare-event rate is not environment-stable; only the classification (clean below, spiking above, rare at the boundary) is.
 
 ## 5 Discussion
 
@@ -97,6 +113,21 @@ At the edge of the spike region (η=0.05 wd=0.03; η=0.1 wd=0.01), 6-seed runs g
 **Significance (whose belief/decision changes).** For practitioners training normalized networks with weight decay (the default recipe), the result changes which monitor to trust: norm trajectory and λmax-crossing alarms will fire in stable runs (15–30 false alarms in our map), while the actionable signature is the *combination* of a sharp regime and active hidden-layer adaptation. For the optimization-theory community, the result adjudicates four live 2026 claims on one benchmark and adds a causal-decomposition method (parameter-group freezing) that the single-mechanism papers lack. For the non-normal-amplification line [4], it supplies the first toy-scale causal evidence (freeze suppresses spikes at equal λmax) — the predicted signature of their frame.
 
 **Threats (why still worth publishing).** Toy scale: one architecture (MLP+LN), one task family (Gaussian clusters), plain SGD, 2–3 seeds per cell (Wilson CIs reported; the map's qualitative structure — monotone in η and wd, wd=0 and low-η never spike — is invariant across seeds). We do not claim the mechanism generalizes to transformers/AdamW; the transfer question is stated as future work. The freeze=hid arm freezes fc1/fc2 weights but leaves LayerNorm gain/bias training; attribution is precise to the projection weights, and a full LayerNorm freeze is a listed follow-up. λmax is measured by power iteration on a 128-example batch at 400-step sampling; per-step runs (every 20 steps) confirm the excursion structure at onset. None of these threats affects the refutations, which are existential: clean runs above threshold exist (P2), clean collapsed runs exist (P1), fp64 spikes exist (NFI), and the freeze=hid 0-spike result holds across both seeds.
+
+**Reproducibility and environment sensitivity.** All committed numbers are tied to the reference data in this
+package (data dirs `pm_out/`, `r2_out/`, `r3_out/`, `trace_out3/`) produced on the author machine (torch 2.9.1
+CPU, Python 3.11, arm64; `torch.manual_seed`/`np.random.seed` fixed per run). Same-machine regeneration is
+byte-identical (verified; `validate.py` Tier B). Exact 20k-step spike counts are **not** cross-machine
+deterministic: an independent environment (fresh clone, torch 2.9.1 CPU, Python 3.12, different host) reproduced
+42/60 phase-map spike counts exactly, with the largest divergences in the heavy-spiking cells (e.g. committed
+11 vs reproduced 21 in one (0.1, 0.1, s2) run; (0.1, 0.1) cell mean 13.0 vs 17.3), and shifted one r3 freeze-arm
+outcome and one boundary presence (see §4.5, §4.7). The qualitative backbone — region geometry, the r2
+freeze-arm direction (freeze=hid 0/2 vs control 2/2 vs freeze=readout 2/2), fp64 persistence, and the
+effective-sharpness refutation — reproduced in both environments. `validate.py` therefore enforces the claims
+as Tier A structural checks plus Tier B *banded* comparisons (region classification, accord rates within the
+reported Wilson CIs, per-cell counts within a tolerance band), not exact-count equality; the reference data
+remain the authoritative numbers reported in this paper, and cross-environment divergence is disclosed here
+rather than hidden by over-fitting the validator to one machine.
 
 **Prior-belief reconciliation.** Registered priors (issue #86): P1 (weight-norm collapse suffices) — **refuted** (accord 37.5%, CI upper bound 51.6); P2 (λmax>2/η suffices) — **refuted** (accord 54.5%, CI[38.0,70.2]; freeze=hid s1 excursion to 6.6× threshold with zero spikes); P3 (a second-order discriminator is required) — **confirmed and refined** to the two-condition co-adaptation rule. The refutations of the two theory-anchored sufficiency priors are the study's strong-novelty signal: the pilot data that motivated registration already showed the tension, and the full phase map + causal arms resolve it.
 

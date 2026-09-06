@@ -1,5 +1,7 @@
 # Issue #86 — Loss Spikes in Toy Networks: A Controlled Adjudication of Competing Instability Mechanisms
 
+**Status**: revision v1.1 (2026-09-07, responding to editorial triage: figures embedded; environment-tolerant validation).
+
 **Contribution level: `theory+empirics`** — controlled toy benchmark (MLP+LayerNorm, plain SGD) with a
 (learning-rate × weight-decay) phase map (60 runs, 3 seeds/cell), concurrent measurement of every
 competing mechanism's named trigger (scale-invariant weight norm, top-Hessian λmax vs 2/η, fp32-vs-fp64),
@@ -30,15 +32,26 @@ then runs `validate.py` against the committed reference data + structural claims
 **Expected output** (final lines):
 
 ```
-VALIDATE: ALL CHECKS PASSED        (30 checks)
+VALIDATE: ALL CHECKS PASSED        (24 checks)
 ```
 
-Tier-B checks require the reproduced spike counts to match the committed reference exactly (60/60 runs)
-and phase-map table means within 0.15 — verified deterministic on the author machine (same-machine torch,
-bit-identical pre-300 freeze-branch traces asserted). Tier-A checks are structural and hold on any machine:
-spike-region geometry, freeze-arm outcomes (control 2/2, freeze-hidden 0/2, freeze-readout 2/2), fp64 2/2,
-boundary 6-seed rates 1/6 & 1/6 (Wilson CI[3,56]), restricted-sharpness refutation (freeze=hid trainable-subspace
-λmax mean 11.5/25.3 > 2/η with zero spikes), trace protocol (control ≥3 post-branch spikes, freeze=hid zero).
+`validate.py` is two-tier and **environment-tolerant** (revision v1.1, after a two-environment reproduction
+study; see manuscript §5):
+
+- **Tier A (structural — hold in ANY environment)**: spike-region geometry (all committed-clean cells clean),
+  r2 freeze arms (control 2/2, freeze-hidden 0/2, freeze-readout 2/2 — the causal backbone, reproduced in
+  both environments), fp64 2/2, restricted-sharpness refutation (trainable-subspace λmax within 3.0 of full;
+  ≥1 freeze=hid arm keeps trainable λmax > 2/η), trace protocol (pre-300 bit-identical branch; freeze=hid s0
+  zero spikes; control s0 ≥2 post-branch spikes), boundary cells rare-event bound (≤2/6 presence).
+- **Tier B (banded — enforces the claims, not exact counts)**: committed-clean cells stay clean; all
+  committed ≥2/3-presence cells spike ≥1/3; heavy-spiking cell means within ±max(12, 0.5×committed); P1 and
+  P2 accord rates inside the committed Wilson CIs (P1 37.5% CI[25.2,51.6]; P2 54.5% CI[38.0,70.2]).
+
+**Why banded, not exact-match**: same-machine regeneration is byte-identical (verified), but exact 20k-step
+spike counts are chaotic under cross-machine floating-point perturbations. An independent environment (fresh
+clone, torch 2.9.1 CPU, Python 3.12, different host) reproduced 42/60 phase-map counts exactly and the full
+qualitative backbone, while heavy-spiking cells diverged up to ±10 spikes. The manuscript's numbers are tied
+to the committed reference data; the validator enforces that a regeneration still exhibits the *claims*.
 
 **Environment**: Python ≥3.10, CPU torch 2.9.1 + numpy + matplotlib (`requirements.txt`). macOS/Linux.
 
