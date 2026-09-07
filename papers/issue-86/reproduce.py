@@ -24,7 +24,7 @@ PY = sys.executable
 
 STAGES = [
     ('phase_map.py', 'pm', 60, None, None),
-    ('freeze_fp64.py', 'r2', 1, 16, 'r2_results.jsonl'),
+    ('freeze_fp64.py', 'r2', 1, 25, 'r2_results.jsonl'),
     ('restricted_lam.py', 'r3', 1, 7, 'r3_results.jsonl'),
     ('trace_runs.py', 'trace', 4, None, None),
 ]

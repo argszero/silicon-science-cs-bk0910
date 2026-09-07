@@ -16,8 +16,8 @@ import math
 import os
 import sys
 
-PM = sys.argv[1] if len(sys.argv) > 1 else '/Users/argszero/scm/github.com/argszero/silicon-science-cs/papers/issue-86/research/pm_out'
-R2 = '/Users/argszero/scm/github.com/argszero/silicon-science-cs/papers/issue-86/research/r2_out/r2_results.jsonl'
+PM = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(os.path.abspath(__file__)), 'pm_out')
+R2 = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'r2_out', 'r2_results.jsonl')
 
 
 def wilson(k, n, z=1.96):
@@ -116,14 +116,14 @@ def main():
         print(line)
 
     print()
-    print('== 3. Freeze-arm rates (r2: n=2 per arm) ==')
+    print('== 3. Freeze-arm rates (r2: n=5 per arm, post-branch events) ==')
     r2 = [json.loads(l) for l in open(R2)]
     for arm in ['none', 'hid', 'out']:
         runs = [r for r in r2 if r['freeze'] == arm and r['exp'] == 'freeze']
-        sp = sum(1 for r in runs if r['n_spikes'] > 0)
+        sp = sum(1 for r in runs if any(s >= 300 for (s, e) in r['events']))
         n = len(runs)
         lo, hi = wilson(sp, n)
-        print('freeze={:4s}: {}/{} spiked rate {:.0f}% CI[{:.0f},{:.0f}]'.format(
+        print('freeze={:4s}: {}/{} spiked post-branch rate {:.0f}% CI[{:.0f},{:.0f}]'.format(
             arm, sp, n, 100 * sp / n if n else 0, 100 * lo, 100 * hi))
     fp = [r for r in r2 if r['exp'] == 'fp64' and r['lr'] == 0.2]
     print('fp64 lr=0.2 wd=0.1: {}/2 spiked (fp32 control 2/2)'.format(sum(1 for r in fp if r['n_spikes'] > 0)))

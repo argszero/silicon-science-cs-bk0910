@@ -148,8 +148,9 @@ def run(lr, wd, seed, steps=20000, dtype=torch.float32, freeze_at=None,
 
 def main():
     results = []
-    # (A) freeze arms on money cell, branch at step 300 (pre-spike; first spike ~300-600)
-    for seed in [0, 1]:
+    # (A) freeze arms on money cell, branch at step 300 (pre-spike; first spike ~300-600).
+    # 5 seeds per arm (>=5: non-overlapping Wilson CIs on the causal contrast).
+    for seed in [0, 1, 2, 3, 4]:
         for frz in ['none', 'hid', 'out']:
             r = run(0.2, 0.1, seed, steps=6000, freeze_at=300, freeze=frz)
             results.append(r)

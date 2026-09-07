@@ -93,11 +93,13 @@ def main():
 
     # ---- Tier A: r2 freeze arms (causal backbone, robust across envs) ----
     r2 = load_jsonl(os.path.join(REPRO, 'r2', 'r2_results.jsonl'))
-    check(len(r2) == 16, 'TierA r2 has 16 runs')
-    for arm, expect in [('none', 2), ('hid', 0), ('out', 2)]:
+    check(len(r2) == 25, 'TierA r2 has 25 runs (15 freeze arms x 5 seeds + 4 fp64 + 6 deep)')
+    for arm, expect in [('none', 5), ('hid', 0), ('out', 5)]:
         runs = [r for r in r2 if r['freeze'] == arm and r['exp'] == 'freeze']
-        sp = sum(1 for r in runs if r['n_spikes'] > 0)
-        check(sp == expect, 'TierA freeze=%s spiked %d/2 (expect %d/2 — causal backbone)' % (arm, sp, expect))
+        # post-branch outcome (start >= 300): pre-branch events are shared bit-identically across arms
+        sp = sum(1 for r in runs if any(s >= 300 for (s, e) in r['events']))
+        check(len(runs) == 5 and sp == expect,
+              'TierA freeze=%s spiked %d/5 post-branch (expect %d/5 — causal backbone, disjoint CIs)' % (arm, sp, expect))
     fp = [r for r in r2 if r['exp'] == 'fp64' and r['lr'] == 0.2]
     check(sum(1 for r in fp if r['n_spikes'] > 0) == 2, 'TierA fp64 on money cell 2/2 spiked (NFI refuted)')
     deep = {(r['lr'], r['wd'], r['seed']): r for r in r2 if r['exp'] == 'deep'}

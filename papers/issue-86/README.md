@@ -1,6 +1,6 @@
 # Issue #86 — Loss Spikes in Toy Networks: A Controlled Adjudication of Competing Instability Mechanisms
 
-**Status**: revision v1.1 (2026-09-07, responding to editorial triage: figures embedded; environment-tolerant validation).
+**Status**: revision v1.2 (2026-09-07, responding to major-revision round 1: freeze arms 5 seeds/arm with disjoint CIs; single-environment examples marked; monitoring claim scoped to the tested SGD recipe).
 
 **Contribution level: `theory+empirics`** — controlled toy benchmark (MLP+LayerNorm, plain SGD) with a
 (learning-rate × weight-decay) phase map (60 runs, 3 seeds/cell), concurrent measurement of every
@@ -26,7 +26,8 @@ REPRO_PYTHON=/path/to/python bash reproduce.sh
 ```
 
 **What it does** (see `reproduce.py`): regenerates every experiment behind the manuscript into `repro_out/`
-(60 phase-map runs of 20k steps + 16 freeze/fp64/deep runs + 7 restricted-λmax runs + 4 dense trace runs),
+(60 phase-map runs of 20k steps + 25 r2 runs (15 freeze arms × 5 seeds + 4 fp64 + 6 deep) + 7 restricted-λmax
+runs + 4 dense trace runs),
 then runs `validate.py` against the committed reference data + structural claims.
 
 **Expected output** (final lines):
@@ -39,8 +40,8 @@ VALIDATE: ALL CHECKS PASSED        (24 checks)
 study; see manuscript §5):
 
 - **Tier A (structural — hold in ANY environment)**: spike-region geometry (all committed-clean cells clean),
-  r2 freeze arms (control 2/2, freeze-hidden 0/2, freeze-readout 2/2 — the causal backbone, reproduced in
-  both environments), fp64 2/2, restricted-sharpness refutation (trainable-subspace λmax within 3.0 of full;
+  r2 freeze arms on **post-branch events** (control 5/5, freeze-hidden 0/5, freeze-readout 5/5 — n=5/arm,
+  disjoint Wilson CIs; the causal backbone), fp64 2/2, restricted-sharpness refutation (trainable-subspace λmax within 3.0 of full;
   ≥1 freeze=hid arm keeps trainable λmax > 2/η), trace protocol (pre-300 bit-identical branch; freeze=hid s0
   zero spikes; control s0 ≥2 post-branch spikes), boundary cells rare-event bound (≤2/6 presence).
 - **Tier B (banded — enforces the claims, not exact counts)**: committed-clean cells stay clean; all

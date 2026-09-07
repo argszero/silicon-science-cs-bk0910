@@ -15,8 +15,8 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 
-HERE = '/Users/argszero/scm/github.com/argszero/silicon-science-cs/papers/issue-86/research'
-OUT = os.path.join(HERE, 'figs')
+HERE = os.path.dirname(os.path.abspath(__file__))
+OUT = os.path.join(HERE, 'figures')  # committed figures live at issue root
 os.makedirs(OUT, exist_ok=True)
 
 LRS = [0.02, 0.05, 0.1, 0.2]
@@ -75,9 +75,11 @@ print('fig1 written; matrix\n', mean_spikes)
 # ---------------- fig 2: freeze-arm outcome bars ----------------
 arms = [('none', 'control'), ('hid', 'freeze hidden (fc1+fc2)'), ('out', 'freeze readout (fc3)')]
 fr_runs = {a: [r for r in r2 if r['freeze'] == a and r['exp'] == 'freeze'] for a, _ in arms}
-spiked = {a: sum(1 for r in fr_runs[a] if r['n_spikes'] > 0) for a, _ in arms}
+def post_branch(r):
+    return any(s >= 300 for (s, e) in r['events'])
+spiked = {a: sum(1 for r in fr_runs[a] if post_branch(r)) for a, _ in arms}
 n_arm = {a: len(fr_runs[a]) for a, _ in arms}
-assert (spiked['none'], spiked['hid'], spiked['out']) == (2, 0, 2)
+assert (spiked['none'], spiked['hid'], spiked['out']) == (5, 0, 5), spiked
 
 # r3 post-branch (steps > 300) full-lambda means per arm+seed
 lam_post = {}
@@ -98,8 +100,8 @@ frac = [spiked[a] / n_arm[a] for a, _ in arms]
 colors = ['#c44e52', '#55a868', '#4c72b0']
 bars = ax1.bar(xs, frac, 0.5, color=colors, alpha=0.85)
 for x, f, a in zip(xs, frac, [a for a, _ in arms]):
-    ax1.text(x, f + 0.03, '%d/%d spiked' % (spiked[a], n_arm[a]), ha='center', fontsize=10)
-ax1.set_ylim(0, 1.35)
+    ax1.text(x, f + 0.03, '%d/%d spiked\n(post-branch)' % (spiked[a], n_arm[a]), ha='center', fontsize=10)
+ax1.set_ylim(0, 1.5)
 ax1.set_ylabel('fraction of seeds spiking (post-branch)')
 ax1.set_xticks(xs)
 ax1.set_xticklabels(labels)
