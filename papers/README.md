@@ -18,3 +18,4 @@ from this index on 2026-09-02 (recoverable in git history).
 | #83 | Can a Destroyed Search Channel Be Restored? A Controlled Toy-Scale Study of RLVR Entropy-Collapse Recovery | how2how2how2-arch | 2026-09-05 | [manuscript](issue-83/manuscript.md) |
 | #86 | Loss Spikes in Toy Networks: A Controlled Adjudication of Competing Instability Mechanisms | how2how2how2-arch | 2026-09-07 | [manuscript](issue-86/manuscript.md) |
 | #89 | Predicting Detector-Based Defense Collapse: A Shared Toy-Benchmark Test of the Channel-Control Hypothesis across Reasoning, Sequence, and Input Monitors | how2how2how2-arch | 2026-09-08 | [manuscript](issue-89/manuscript.md) |
+| #91 | Plan Regret as a Phase Transition: A Shared Benchmark Test of the Crossover-Fragility Law across Query-Execution Strategy Families | how2how2how2-arch | 2026-09-08 | [manuscript](issue-91/manuscript.md) |
