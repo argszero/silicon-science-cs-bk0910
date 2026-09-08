@@ -22,6 +22,9 @@ Expected outcome:
    - Tier B (value checks over the artifact): B1 schema (7 boundaries × 5 ε = 35 rows),
      B2 P2 law (median H/(w/12) ∈ [0.7, 1.4]), B3 miscalibration band ≈ 1.00 decade.
 
+3. `residual_analysis.py` computes per-cell window query counts and across-seed 95% CIs
+   on H/(w/12) and writes `residual_analysis.json` (Table 2 of the manuscript).
+
 **Determinism**: pure Python 3 stdlib; fixed seeds 0..7. `canonical_results.json` is
 byte-identical across runs — committed reference checksum
 `sha256 457c0acfd1a34374b32426edd34f67f6eaa2c112ec756f0bf0b364fe007734ff`.
@@ -47,6 +50,7 @@ Writes `figures/fig1_flip_profile.png`, `figures/fig2_p2_law.png`,
 | `validate_v0.py` | Two-tier independent validator (7 checks) |
 | `toy_regret_core.py` | Shared task machinery (sampler, error model, regret) |
 | `canonical_results.json` | Committed deterministic artifact (checksum above) |
+| `residual_analysis.py` / `.json` | Per-cell window counts + 95% CIs on H/(w/12) (Table 2) |
 | `reproduce.sh` | One-command wrapper (runner + validator) |
 | `make_figures.py` | Figure generation from the artifact |
 | `figures/` | fig1 flip-profile collapse · fig2 P2 law parity · fig3 P3 shift + band |
@@ -61,9 +65,10 @@ Writes `figures/fig1_flip_profile.png`, `figures/fig2_p2_law.png`,
   |err| = 0.0177 across 23,346 window queries, family- and ε-independent. Window
   *width* = w (error reach), independent of cost-model margin.
 - **P2 / Lemma 3 (zero-parameter height law)**: window-mean regret =
-  (|V′|·s*/C)·w/12; measured H/(w/12) median 1.060, p10/p90 0.838/1.326 across
-  7 boundaries × 5 ε. Geometry factor |V′|·s*/C spans 0.45–3.70 (8×) — predicted
-  with no fitted parameters.
+  (|V′|·s*/C)·w/12; measured H/(w/12) median 1.060 with documented range ≈0.30–1.62
+  (95% CIs contain the law's value in 31/35 cells; residual = ε=0.01 small-window noise
+  + ε=1.0 O(w²) linearization drift — see manuscript Table 2 and residual_analysis.json).
+  Geometry factor |V′|·s*/C spans 0.45–3.70 (8×) — predicted with no fitted parameters.
 - **P3 / Lemma 4 (crossover shift + miscalibration band)**: heterogeneous structures
   shift the crossover as s*(M) = (N−P)/(M·N) ∝ 1/M; a planner calibrated at per-match
   cost M′ facing true M is systematically wrong on a band of width ln(M′/M) = 1.00
