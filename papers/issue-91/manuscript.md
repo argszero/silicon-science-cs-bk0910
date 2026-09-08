@@ -7,7 +7,7 @@
 
 ## Abstract
 
-Query optimizers select execution strategies from estimated cardinalities, and estimation error causes plan regret. Recent work [2606.16341] showed that for filtered-ANN index selection, regret is not spread evenly: it concentrates in a narrow fragility window around strategy crossovers, forming a "phase transition" with a ~290× concentration ratio. Whether this crossover-fragility is a general law of query-execution strategy decisions — and whether its geometry is predictable from the cost model alone — is open. We answer both on one shared synthetic benchmark: selectivity drawn log-uniform, bounded multiplicative estimation error, exact-oracle relative-cost regret, across three strategy-decision families (filtered-ANN analogue, join-order pairwise, index-vs-scan with a per-match multiplier sweep) spanning 7 envelope boundaries. We prove and verify a closed-form law with zero fitted parameters: (i) regret is *exactly zero* outside windows of one error half-width around each crossing (Lemma 1); (ii) the flip probability profile collapses universally onto (1−dw)/2 in window-distance units — window *width* is set by the error reach, independent of cost-model margin (Lemma 2); (iii) window-mean regret equals (|V′|·s*/C)·w/12, where |V′|/C is the crossing-pair slope-to-cost ratio — the flip-margin law predicting regret *height* out-of-sample from cost geometry alone (Lemma 3), with measured H/(w/12) at median 1.060 and a documented range ≈0.30–1.62 (95% CIs contain the law's value in 31 of 35 cells; the residual spread is dominated by sampling noise at ε = 0.01, where windows hold only 14–43 queries, and by the predicted O(w²) linearization drift at ε = 1.0); (iv) heterogeneous structures shift crossovers as 1/M, so a planner calibrated on one per-match cost regime is systematically wrong on a *miscalibration band* whose width is the log-ratio of believed vs true cost — a distinct mechanism from estimation-error fragility (Lemma 4). All claims are validated deterministically (7 boundaries × 5 error levels × 8 seeds; validator 7/7; byte-identical reproduction); the law is derived and tested on the same synthetic framework, so §6 states an explicit external-validation protocol — a falsifiable real-system test for each lemma — and §7 names the first concrete test target. **If these results hold, optimizer and cardinality-estimation-research communities change what they measure: q-error alone is a poor proxy for plan-level risk, because regret is a thresholded, local, geometry-determined object — concentrated near crossings whose location and magnitude are predictable before any workload runs.**
+Query optimizers select execution strategies from estimated cardinalities, and estimation error causes plan regret. Recent work [2606.16341] showed that for filtered-ANN index selection, regret is not spread evenly: it concentrates in a narrow fragility window around strategy crossovers, forming a "phase transition" with a ~290× concentration ratio. Whether this crossover-fragility is a general law of query-execution strategy decisions — and whether its geometry is predictable from the cost model alone — is open. We answer both on one shared synthetic benchmark: selectivity drawn log-uniform, bounded multiplicative estimation error, exact-oracle relative-cost regret, across three strategy-decision families (filtered-ANN analogue, join-order pairwise, index-vs-scan with a per-match multiplier sweep) spanning 7 envelope boundaries. We prove and verify a closed-form law with zero fitted parameters: (i) regret is *exactly zero* outside windows of one error half-width around each crossing (Lemma 1); (ii) the flip probability profile collapses universally onto (1−dw)/2 in window-distance units — window *width* is set by the error reach, independent of cost-model margin (Lemma 2); (iii) window-mean regret equals (|V′|·s*/C)·w/12, where |V′|/C is the crossing-pair slope-to-cost ratio — the flip-margin law predicting regret *height* out-of-sample from cost geometry alone (Lemma 3), with measured H/(w/12) at median 1.060 and a documented range ≈0.30–1.62 (95% CIs contain the law's value in 30 of 35 cells; the residual spread is dominated by sampling noise at ε = 0.01, where windows hold only 14–43 queries, and by the predicted O(w²) linearization drift at ε = 1.0); (iv) heterogeneous structures shift crossovers as 1/M, so a planner calibrated on one per-match cost regime is systematically wrong on a *miscalibration band* whose width is the log-ratio of believed vs true cost — a distinct mechanism from estimation-error fragility (Lemma 4). All claims are validated deterministically (7 boundaries × 5 error levels × 8 seeds; validator 7/7; byte-identical reproduction); the law is derived and tested on the same synthetic framework, so §6 states an explicit external-validation protocol — a falsifiable real-system test for each lemma — and §7 names the first concrete test target. **If these results hold, optimizer and cardinality-estimation-research communities change what they measure: q-error alone is a poor proxy for plan-level risk, because regret is a thresholded, local, geometry-determined object — concentrated near crossings whose location and magnitude are predictable before any workload runs.**
 
 ## 1. Introduction
 
@@ -91,7 +91,7 @@ H := meanR_b·C_b/(V′_b·s*_b). The zero-parameter prediction is H = w/12 (Lem
 **Measured result with an honest band, not a point claim**: across the 35 (boundary × ε)
 cells the ratio H/(w/12) has median 1.060 and inter-decile range 0.838–1.326, with the
 full range ≈0.30–1.62 concentrated in the ε = 0.01 column. Per-cell 95% confidence
-intervals (across-seed, 8 seeds; Table 2) contain the law's value 1.0 in **31 of 35**
+intervals (across-seed, 8 seeds; Table 2) contain the law's value 1.0 in **30 of 35**
 cells. The residual is not uniform; it decomposes cleanly by ε:
 
 - **ε = 0.01 (small-window sampling noise).** The fragility window at ε = 0.01 holds only
@@ -106,8 +106,12 @@ cells. The residual is not uniform; it decomposes cleanly by ε:
   predicted by the Lemma 3 linearization correction (per-flip regret ≈ (V′·s*/C)·d assumes
   e^{−d} ≈ 1 − d, an error of order w² that grows with ε). The law is exact in the w→0
   limit and the correction is one-sided and ε-monotone, matching the data.
-- **Mid ε (0.03–0.30): all 21 cells contain 1.0** within their CIs (Table 2) — the cleanest
-  regime, where windows hold 84–966 queries and the linearization correction is negligible.
+- **Mid ε (0.03–0.30): 20 of 21 cells contain 1.0** within their CIs (Table 2). The single
+  exception is C-M1000 at ε = 0.3 (ratio 1.22, CI [1.06, 1.39], above the law) — the steepest
+  index family (|V′| = 10⁷), whose crossing sits nearest the selectivity floor; its
+  linearization drift onsets at lower ε, consistent with the O(w²) correction scaling with
+  local curvature. The cleanest regime is ε ∈ {0.03, 0.1}: all 14 cells contain 1.0
+  (windows hold 54–345 queries, correction negligible).
 
 Table 1: H/(w/12) ratio by boundary and ε (unchanged from v0; point estimates)
 | boundary | s* | |V′| | C_pair | V′s*/C | ε=.01 | .03 | .1 | .3 | 1.0 |
@@ -137,10 +141,13 @@ per-cell total queries = 16,000. Full residual data and code: `residual_analysis
 
 **Calibrated claim.** Rather than "reproduces all magnitudes," the honest statement is: the
 zero-parameter law predicts each cell's window-mean regret to within a documented residual
-band — median ratio 1.060, 31/35 cells' CIs containing the law's value — with residuals
+band — median ratio 1.060, 30/35 cells' CIs containing the law's value — with residuals
 that are (a) sampling noise where windows are small (ε = 0.01), and (b) a one-sided,
-ε-monotone O(w²) linearization drift where ε is large (ε = 1.0), matching the theory's
-correction direction in both regimes.
+ε-monotone O(w²) linearization drift where ε is large (ε ≥ 0.3 for the steepest boundary,
+ε = 1.0 for the rest), matching the theory's correction direction in both regimes.
+
+![Zero-parameter height law H = w/12; parity of measured H vs predicted w/12 (left) and
+residual ratio vs ε by boundary (right, Lemma 3). Table 2 gives per-cell 95% CIs.](figures/fig2_p2_law.png)
 
 **Reconciliation with 2606.16341's flip-margin theory (reviewer Q2).** Lemma 3 does not
 supersede the anchor's flip-margin 1/|V′| boundary theory; it relocates it. The anchor's
