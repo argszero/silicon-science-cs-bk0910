@@ -82,6 +82,8 @@ Across all 3 families × 7 boundaries × 5 ε × 8 seeds (5.6M query decisions),
 ### 4.2 Flip profile collapses to (1−dw)/2 (Fig. 1)
 Pooling all window queries (each family counted once, 23,346 window queries), empirical flip rate per d/w bucket: 0.461, 0.407, 0.377, 0.345, 0.282, 0.222, 0.173, 0.133, 0.071, 0.026 at dw-mid 0.05..0.95 vs theory 0.475..0.025 — worst |err| = 0.0177 (identical in the independent validator A3 computation). Family-, boundary-, and ε-independent.
 
+![Universal flip profile under the crossover-fragility law; pooled worst |err| = 0.0177 across 23,346 window queries (Lemma 2).](figures/fig1_flip_profile.png)
+
 ### 4.3 H = w/12 zero-parameter height law (Fig. 2, Table 1)
 Per-boundary window-mean regret, normalized by geometry: H/(w/12) has median 1.060, p10–p90 0.838–1.326 across the 35 (boundary × ε) cells. Boundaries span geometry factor V′·s*/C from 0.45 (B) to 3.70 (A-s2) and ε spans two decades — yet a single formula with no fitted parameters reproduces all magnitudes.
 
@@ -98,8 +100,12 @@ Table 1: H/(w/12) ratio by boundary and ε
 
 Residual structure matches the theory's corrections: low-ε scatter (small windows ~17 queries → sampling noise) and an upward drift at ε = 1.0 (O(w²) linearization correction).
 
+![Zero-parameter height law H = w/12; parity of measured H vs predicted w/12 and residual vs ε by boundary (Lemma 3).](figures/fig2_p2_law.png)
+
 ### 4.4 Crossover shift and miscalibration band (Fig. 3)
 Oracle flips exactly at s*(M) = (N−P)/(M·N) for M ∈ {1,10,100,1000} (decade-spaced: 0.999, 0.0999, 0.00999, 0.000999). A planner calibrated at M′ = 10 facing true M = 100 is systematically wrong on s ∈ (0.00999, 0.0999): **1.00 decades = 25.0% of the log-selectivity range** (validator B3) — the open miscalibration band of [2606.16341] as a quantitative boundary-offset.
+
+![Crossover shift s*(M) ∝ 1/M (left) and the miscalibration band of width ln(M′/M) = 1.00 decades at 10× mismatch (right, Lemma 4).](figures/fig3_p3_shift.png)
 
 ### 4.5 Baseline and calibration
 A uniform-random planner on Family A has mean relative regret 9.24 (any strategy, any s) vs our oracle-aware near-window means 0.003–0.115 depending on ε — a 40–3000× gap, showing the fragility windows are genuinely narrow (a planner that is right everywhere except windows pays little) while the windows themselves are the *entire* regret budget. Error-free (ε→0) planner achieves regret 0: the fragility is induced entirely by estimation error interacting with crossings.
