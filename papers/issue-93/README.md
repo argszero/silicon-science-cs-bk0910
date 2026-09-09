@@ -25,12 +25,13 @@ regenerated artifact.
 ## Files
 
 - `manuscript.md` — full paper (figures referenced from `figures/`)
-- `figures/fig1_phase_field.png`, `figures/fig2_boundary_plateau.png`
+- `figures/fig1_phase_field.png`, `figures/fig2_boundary_plateau.png`,
+  `figures/fig3_service_ordering.png`
 - `canonical_runner.py` — self-contained deterministic model + all reported panels
 - `canonical_results.json` — canonical artifact (sha256 `9be610e4…`)
 - `validate.py` — Tier A law checks + Tier B determinism/sha checks
 - `reproduce.sh` — `python3 canonical_runner.py && python3 validate.py`
-- `make_figures.py` — regenerates the two manuscript figures from
+- `make_figures.py` — regenerates the three manuscript figures from
   `canonical_results.json` (needs matplotlib)
 
 ## Environment

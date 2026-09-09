@@ -68,3 +68,39 @@ fig.tight_layout()
 fig.savefig(os.path.join(figdir, 'fig2_boundary_plateau.png'), dpi=160)
 plt.close(fig)
 print('figures written:', os.listdir(figdir))
+
+# ---- fig3: service-ordering mechanism (P3) from P5_ablation ----
+ab = r['P5_ablation']
+NCS5 = sorted(int(k[2:]) for k in ab)  # keys are 'Nc10', 'Nc12', ...
+shared = [ab['Nc' + str(n)]['d_shared_ms'] for n in NCS5]
+own = [ab['Nc' + str(n)]['d_own_ms'] for n in NCS5]
+ratio = [sh / ow for sh, ow in zip(shared, own)]
+fig, axes = plt.subplots(1, 2, figsize=(12.5, 4.4))
+ax = axes[0]
+ax.plot(NCS5, shared, 'o-', color='#c0392b', lw=1.8, label='shared FIFO  $q_{tot}/C$')
+ax.plot(NCS5, own, 's-', color='#2471a3', lw=1.8, label='per-class service  $q_l/C$')
+ax.axhline(5.0, color='gray', lw=0.7, ls=':', label='fragility threshold (5 ms)')
+ax.set_xlabel('classic flows  $N_c$  (at $N_l=20$, uncoupled)')
+ax.set_ylabel('L4S-class delay (ms)')
+ax.set_xticks(NCS5)
+ax.set_title('(a) Same marking, two service orders')
+ax.legend(loc='upper left', fontsize=8)
+ax = axes[1]
+ax.plot(NCS5, ratio, 'D-', color='#7d3c98', lw=1.8)
+ax.axhline(4.0, color='gray', lw=0.9, ls='--', label='4$\times$ reference (validate.py bound)')
+for n, rr in zip(NCS5, ratio):
+    ax.annotate('%.1f$\times$' % rr, (n, rr), textcoords='offset points',
+                xytext=(0, 8), fontsize=8, ha='center', color='#333')
+ax.set_xlabel('classic flows  $N_c$  (at $N_l=20$, uncoupled)')
+ax.set_ylabel('delay ratio  $d_{shared}/d_{own}$')
+ax.set_xticks(NCS5)
+ax.set_yscale('log')
+ax.set_title('(b) Head-of-line service cost ratio')
+ax.legend(loc='upper left', fontsize=8)
+fig.suptitle('Figure 3. Fragility is service ordering, not marking: '
+             'shared-FIFO vs per-class delay at identical marking dynamics', y=1.0)
+fig.tight_layout()
+fig.savefig(os.path.join(figdir, 'fig3_service_ordering.png'), dpi=160)
+plt.close(fig)
+print('fig3 written')
+
