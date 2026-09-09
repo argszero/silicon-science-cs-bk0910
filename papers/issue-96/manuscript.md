@@ -193,6 +193,9 @@ boundary whose sharpness is set by the coupling channel"): the transition width 
 fixed cv is ≤ 0.05 — the grid resolution itself — at every pollution level tested
 (π ∈ {0, 0.5, 1}, cv ∈ {0.5, 0.9}). The flip is a genuine phase line, one grid step wide;
 the boundary's *location* is smooth (it is not a discontinuous jump — refinement of P1).
+![Fig 1 — Speedup phase field at pi = 0 (bandwidth coupling only): 358 helpful / 22 harmful cells out of 380; sharp boundary ac*(cv) overlaid (black dashed); folklore "~50% accuracy" line sits far above the entire bandwidth-only crossover region.](figures/fig1_phase_field.png)
+
+**Fig. 1 — Speedup phase field (pi = 0).** Red = harmful (speedup < 1), green = helpful; black dashed = boundary ac*(cv); gray dotted = folklore "~50% accuracy".
 
 ### 4.3 P2 — the naive accounting law, and the folklore rule's failure under bandwidth coupling
 
@@ -211,6 +214,9 @@ under bandwidth coupling at any pressure: sweeping bus pressure m·s ∈ {0.16, 
 prefetcher needs only ≈ 15.5% accuracy to be net helpful (Fig. 2). Each useful prefetch
 saves the full stall P = 200 cyc; a useless one costs only marginal queueing. Bandwidth
 coupling alone never produces the symmetric 50% break-even.
+![Fig 2 — Pollution channel reconciles the folklore 50% rule: measured max crossover accuracy ac*max over cv (blue) tracks the closed form pi/(1+pi) (orange); ac*max = 0.505 at pi = 1 equals the folklore break-even; horizontal lines = bandwidth floor 0.126 (green dashed) and folklore 0.5 (gray dotted).](figures/fig2_pollution_law.png)
+
+**Fig. 2 — Pollution law and the folklore reconciliation.** Measured ac\*max (blue) vs closed form π/(1+π) (orange); the folklore ~50% line (gray dotted) is reached only in the pure-pollution limit π → 1.
 
 ### 4.4 P2′ — pollution channel: the closed-form law ac\* = π/(1+π), and the reconciliation
 
@@ -245,6 +251,9 @@ bus). Decoupling removes **all** harm: harmful cells 22 → 0; the worst corner 
 cv = 0.9) flips from 0.83× (harmful) to **2.51×** speedup — a 3.03× ablation ratio on the
 dominant arm. Useless prefetch volume harms *only* by delaying demand fills; there is no
 intrinsic harm in issuing useless prefetches (Fig. 3a).
+![Fig 3 — Same-volume mechanism attribution: (a) decoupled service removes all harm (22 -> 0 harmful cells) and flips the worst corner from 0.83x to 2.51x speedup; (b) pollution-free arm retains exactly the 22-cell bandwidth floor at every pi (full model 100/129/142).](figures/fig3_mechanism_ablation.png)
+
+**Fig. 3 — Mechanism attribution.** (a) Coupling ablation: harmful cells 22 → 0 and corner speedup 0.83× → 2.51× under identical useless-prefetch volume. (b) Pollution is the marginal channel: pollution-free arm = 22 (bandwidth floor) at every π.
 
 Pollution attribution is equally clean: at π ∈ {0.5, 0.8, 1.0}, the pollution-free arm
 retains exactly 22 harmful cells — the same bandwidth floor as π = 0 — while the full model
