@@ -16,7 +16,7 @@ Python 3 stdlib only, deterministic — no randomness, no third-party imports), 
 
 **Tolerance**: reproduction is *byte-identical* — `validate.py` asserts the regenerated
 `canonical_results.json` sha256 equals the committed reference
-(`471f45fef9f9c49bdb14d56fee353a655548c3fd4d813a1504c0c6dbc80cd4f0`) and re-runs three
+(`9be610e44217351dbf023aea6ac20f0a78d22b13b9591d47f24c7dbbc3f49a3a`) and re-runs three
 marker cells asserting exact equality (< 1e-9). Tier-A structural checks (open-loop
 textbook equilibria, plateau law < 5% error, service-ablation ratio > 4×, coupled-field
 isolation < 5 ms, dt-convergence < 0.01%, unique-attractor spread < 1%) pass on the
@@ -27,7 +27,7 @@ regenerated artifact.
 - `manuscript.md` — full paper (figures referenced from `figures/`)
 - `figures/fig1_phase_field.png`, `figures/fig2_boundary_plateau.png`
 - `canonical_runner.py` — self-contained deterministic model + all reported panels
-- `canonical_results.json` — canonical artifact (sha256 `471f45fe…`)
+- `canonical_results.json` — canonical artifact (sha256 `9be610e4…`)
 - `validate.py` — Tier A law checks + Tier B determinism/sha checks
 - `reproduce.sh` — `python3 canonical_runner.py && python3 validate.py`
 - `make_figures.py` — regenerates the two manuscript figures from

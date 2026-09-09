@@ -98,7 +98,6 @@ def run(N_c, N_l, p_c_fixed=None, p_l_fixed=None, g=1.0, name='',
     max_q = 0.0
     q_hist = []
     cnt = 0
-    t0 = time.time()
     for i in range(n):
         st = step_rk4(st, N_c, N_l, p_c_fixed, p_l_fixed, g)
         W_c, W_l, q_c, q_l, I_c, I_l = st
@@ -130,7 +129,6 @@ def run(N_c, N_l, p_c_fixed=None, p_l_fixed=None, g=1.0, name='',
             acc['p_drop'] += (max(0.0, X - C) / X if X > 0 else 0.0)
             q_hist.append((q_tot / C) * 1000.0)
             cnt += 1
-    dt_sim = time.time() - t0
     nq = len(q_hist)
     q_hist_s = sorted(q_hist)
     out = {k: v / cnt for k, v in acc.items()}
@@ -139,7 +137,6 @@ def run(N_c, N_l, p_c_fixed=None, p_l_fixed=None, g=1.0, name='',
     out['p99_d_ms'] = q_hist_s[int(nq * 0.99)] if nq else float('nan')
     out['p50_d_ms'] = q_hist_s[int(nq * 0.50)] if nq else float('nan')
     out['util'] = (out['x_c'] + out['x_l']) / C
-    out['sim_seconds'] = round(dt_sim, 1)
     return out
 
 def check_openloop():

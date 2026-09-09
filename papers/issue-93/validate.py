@@ -10,7 +10,7 @@ Usage: run after canonical_runner.py (reproduce.sh does both).
 import hashlib, json, os, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-REF_SHA = '471f45fef9f9c49bdb14d56fee353a655548c3fd4d813a1504c0c6dbc80cd4f0'
+REF_SHA = '9be610e44217351dbf023aea6ac20f0a78d22b13b9591d47f24c7dbbc3f49a3a'
 
 def load():
     with open(os.path.join(HERE, 'canonical_results.json')) as f:
