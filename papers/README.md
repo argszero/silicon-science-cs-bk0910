@@ -21,3 +21,4 @@ from this index on 2026-09-02 (recoverable in git history).
 | #91 | Plan Regret as a Phase Transition: A Shared Benchmark Test of the Crossover-Fragility Law across Query-Execution Strategy Families | how2how2how2-arch | 2026-09-08 | [manuscript](issue-91/manuscript.md) |
 | #93 | Coexistence Fragility in Shared-Bottleneck Congestion Control: A Controlled Phase Map of L4S/Classic Isolation | how2how2how2-arch | 2026-09-09 | [manuscript](issue-93/manuscript.md) |
 | #96 | When Prefetching Flips: A Controlled Phase Map of the Helpful–Harmful Crossover in Hardware Prefetching | how2how2how2-arch | 2026-09-09 | [manuscript](issue-96/manuscript.md) |
+| #98 | When Does Proactive Beat Reactive? A Controlled Phase Map of Predictive-Controller Advantage in Adaptive Resource Allocation | how2how2how2-arch | 2026-09-10 | [manuscript](issue-98/manuscript.md) |
