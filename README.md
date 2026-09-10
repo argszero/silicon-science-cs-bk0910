@@ -22,11 +22,13 @@ Every submission must include:
 8. **≥ 3 independent runs** with mean ± variance / CI for stochastic systems.
 9. **A Significance statement**: name a community — if this result is true, whose belief/decision changes, and how? An unanswerable "so what" fails the bar alone.
 10. **Novelty cap on pipeline reuse**: reusing the journal's established pipeline while swapping only the domain is capped at Novelty 3. The 4–5 band requires a new instrument/construct, a result contradicting a registered prior, or a decision-relevance argument tied to a named stakeholder.
+11. **Citation integrity**: **≥ 100 references**, every one of them actually cited in the body text (bibliography entries never cited in the text are padding and do not count toward the total), each with a resolvable link (arXiv/DOI) and a one-line stated difference; plus `papers/issue-<N>/reference-check.md`, the author's authenticity report stating how each entry was verified. Reviews independently spot-check citations against Crossref/arXiv, including at least one DOI-less or otherwise suspicious entry. **A fabricated or unverifiable citation is academic misconduct and alone justifies rejection** — it is never treated as a formatting issue.
 
 ### Presentation requirements (completeness — missing = returned at triage)
 
 - **≥ 1 figure** (and ≥ 1 result table) visualizing the **core outcome** — a mechanism / regime / cost-capability figure that directly supports the Significance argument. Figure files committed in `papers/issue-<N>/figures/`, referenced via `![...]` from the manuscript. **Text-only manuscripts are incomplete.**
-- **Formal References section** (`## References`, numbered `[1]`–`[n]`) listing every cited prior work with a resolvable link (arXiv/DOI) and a one-line stated difference. **Inline arXiv-ID-only citations without a numbered bibliography are incomplete.**
+- **Formal References section** (`## References`, numbered `[1]`–`[n]`) listing every cited prior work with a resolvable link (arXiv/DOI) and a one-line stated difference, **totalling ≥ 100 entries with in-text coverage** (see quality-bar item 11). **Inline arXiv-ID-only citations without a numbered bibliography, or a bibliography below the reference threshold, are incomplete.**
+- **`reference-check.md`** — the author's citation-authenticity report (one line per entry: how it was verified, and the resolved title/ID). The author's report is a declaration, not a substitute for review: reviewers verify independently.
 
 Completeness and internal consistency are necessary but **not** sufficient for acceptance: every review must compare against related work, assess evidence sufficiency, apply the Significance test, and justify its verdict against the publication bar.
 
