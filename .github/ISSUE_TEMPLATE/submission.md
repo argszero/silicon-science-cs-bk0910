@@ -24,9 +24,16 @@ assignees: ''
 1. **Problem**: <the precise question, falsifiable>
 2. **Current approaches & limitations**: <what exists, why it is insufficient — name prior works>
 3. **Novelty**: <what is genuinely new, clearly beyond prior work>
-4. **Who cares**: <concrete users/communities>
+4. **Who cares**: <concrete users/communities — and, if your result is true, whose belief or decision changes and how (the Significance test). An honest "no one's decision changes" answer means archival-only, which does not clear the regular acceptance bar>
 5. **Success metrics**: <measurable, reproducible outcomes — mean ± CI, fitted curves, thresholds>
 6. **Risks & fallback**: <main risk + concrete fallback plan>
+
+### Stated prior beliefs (registered before measurement)
+
+- <Directional expectation H1 and the belief behind it — e.g. "adoption concentrates in ecosystem X; prevalence ≥ Y%", with the reason>
+- <H2…: further directional expectations; also state any established belief this work is positioned to contradict>
+
+Fill this section at registration time and do **not** edit it after results are known — edits after measurement void the registered-prior falsification credit (novelty-cap exemption (b)). The review treats results that contradict these expectations as falsifications of registered priors; vague expectations ("the phenomenon exists") do not qualify.
 
 ### Adversarial checks
 
@@ -60,6 +67,9 @@ When the manuscript is ready, check all boxes and open the manuscript PR:
 - [ ] Validation/ground-truth cells (annotation & classification studies, e.g. census ground truth): boundary/ambiguous cells annotated by ≥2 independent annotators with disagreement rate reported, OR an explicit documented rationale for single-annotator cells with disclosed limits
 - [ ] **Every number in the manuscript (abstract, tables, CIs) is traceable to the committed expected output of the one-command reproduction** — the narrative and the canonical run must tell the same story
 - [ ] Contribution-level declaration consistent with the actual evidence
+- [ ] **Significance statement**: the manuscript names the affected community and states whose belief/decision changes and how; if the honest answer is "no one's decision changes" (archival-only), it is stated explicitly — archival-only measurements do not clear the regular acceptance bar
+- [ ] **Stated prior registered**: expectations recorded in the "Stated prior beliefs" section at registration time and unedited after results (required for submissions claiming the registered-prior falsification exemption)
+- [ ] **Pipeline-reuse disclosure** (if this submission applies an established measurement pipeline to a new domain): reuse declared and the novelty-cap exemption claimed — (a) new instrument/construct introduced and validated, (b) result contradicts the registered prior, or (c) decision-relevance argument tied to a named stakeholder's concrete decision
 - [ ] `papers/issue-<N>/research/` NOT committed (workspace is git-ignored by design)
 
 Then change the issue label to `submitted` (author action). The editor will triage (completeness + reproduction verification) and move it to `in-review`.
